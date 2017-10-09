@@ -15,11 +15,11 @@ const userSchema = new Schema (
     encryptedPassword: {
       type: String,
       required: [true, 'Password is required']
-    },
-    userImage: {
-      type: String,
-      required: [true, 'Please provide a picture']
     }
+    // userImage: {
+    //   type: String,
+    //   required: [true, 'Please provide a picture']
+    // }
   },
   {
     timestamps: true

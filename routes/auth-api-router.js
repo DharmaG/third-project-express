@@ -37,7 +37,8 @@ router.post('/process-signup', (req, res, next) => {
         const theUser = new UserModel({
           fullName: req.body.signupFullName,
           username: req.body.signupUserName,
-          encryptedPassword: hashPass
+          encryptedPassword: hashPass,
+          // userImage: req.body.sigupUserImage
         });
 
           console.log(theUser.save());
@@ -104,6 +105,8 @@ router.delete('/logout', (req, res, next) => {
      req.user.encryptedPassword = undefined;
      amILoggedIn = true;
    }
+   console.log('THE USER');
+   console.log(req.user);
    res.status(200).json(
      {
        isLoggedIn: Boolean(req.user),
