@@ -21,10 +21,10 @@ router.get('/todos', (req, res, next) => {
 //POST localhost:3000/api/phones
 router.post('/todos', (req, res,next) => {
 
-//   if (!req.user) {
-//   res.status(401).json({ errorMessage: 'Not loged in.' });
-//   return;
-// }
+  if (!req.user) {
+  res.status(401).json({ errorMessage: 'Not loged in.' });
+  return;
+}
 
 
 const theTodo = new TodoModel({
@@ -53,21 +53,27 @@ const theTodo = new TodoModel({
     });
 });
 
-router.get('/todos/:todoId', (req, res, next) => {
-  TodoModel.findById(
-    req.params.todoId,
-    (err, todoFromDb) => {
-      if (err) {
-        console.log('Todo details ERROR');
-        res.status(500).json({errorMessage: 'Todo details went wrong'});
-        return;
-      }
-      res.status(200).json(todoFromDb);
-    }
-  );
-});
+// router.get('/todos/:todoId', (req, res, next) => {
+//   TodoModel.findById(
+//     req.params.todoId,
+//     (err, todoFromDb) => {
+//       if (err) {
+//         console.log('Todo details ERROR');
+//         res.status(500).json({errorMessage: 'Todo details went wrong'});
+//         return;
+//       }
+//       res.status(200).json(todoFromDb);
+//     }
+//   );
+// });
 
 router.put('/todos/:todoId', (req, res, next) => {
+
+  if (!req.user) {
+  res.status(401).json({ errorMessage: 'Not loged in.' });
+  return;
+}
+
   TodoModel.findById(
     req.params.todoId,
 
@@ -75,11 +81,14 @@ router.put('/todos/:todoId', (req, res, next) => {
       if (err) {
       console.log('Todo owner error', err);
       res.status(500).json({ errorMessage: 'Todo PUT went wrong ' });
+      console.log(err);
       return;
       }
       todoFromDb.set({
-        timerHours: req.body.timerHours
-        // startTime: req.body.startTime,
+        todo:        req.body.todoName,
+        timerHours:  req.body.timerHours,
+        startTime:   req.body.startTime,
+        order:       req.body.order
       });
 
       todoFromDb.save((err) => {
@@ -92,7 +101,7 @@ router.put('/todos/:todoId', (req, res, next) => {
           }
         if (err) {
         console.log('TODO details ERROR');
-        res.status(500).json({ errorMessage: 'Todo details went wrong' });
+        res.status(500).json({ errorMessage: 'Todo timerHours went wrong' });
         return;
         }
         res.status(200).json(todoFromDb);
