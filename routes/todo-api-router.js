@@ -12,7 +12,6 @@ router.get('/todos', (req, res, next) => {
       res.status(500).json({ errorMessage: 'Finding TodoModel went wrong' });
       return;
     }
-    console.log('FUCK');
     console.log(recentTodo);
     res.status(200).json(recentTodo);
 
@@ -29,13 +28,10 @@ router.post('/todos', (req, res,next) => {
 
 
 const theTodo = new TodoModel({
-  todo: req.body.todoName
-  // timerHours: req.body.timerHours,
+  todo: req.body.todoName,
+  timerHours: req.body.timerHours,
   // startTime: req.body.startTime,
 });
-
-console.log('hiiiiii');
-console.log(theTodo);
 
 
   theTodo.save((err) => {
@@ -49,13 +45,60 @@ console.log(theTodo);
   }
 
   if(err) {
-    console.log('theErrorISHere   48');
     console.log('Error POSTING phone', err);
     res.status(500).json({ errorMessage: 'New phone went wrong 💩' });
   }
 
    res.status(200).json(theTodo);
     });
+});
+
+router.get('/todos/:todoId', (req, res, next) => {
+  TodoModel.findById(
+    req.params.todoId,
+    (err, todoFromDb) => {
+      if (err) {
+        console.log('Todo details ERROR');
+        res.status(500).json({errorMessage: 'Todo details went wrong'});
+        return;
+      }
+      res.status(200).json(todoFromDb);
+    }
+  );
+});
+
+router.put('/todos/:todoId', (req, res, next) => {
+  TodoModel.findById(
+    req.params.todoId,
+
+    (err, todoFromDb) => {
+      if (err) {
+      console.log('Todo owner error', err);
+      res.status(500).json({ errorMessage: 'Todo PUT went wrong ' });
+      return;
+      }
+      todoFromDb.set({
+        timerHours: req.body.timerHours
+        // startTime: req.body.startTime,
+      });
+
+      todoFromDb.save((err) => {
+        if (todoFromDb.errors) {
+        res.status(400).json({
+        errorMessage: 'Validation failed ',
+        validationErrors: todoFromDb.errors
+            });
+            return;
+          }
+        if (err) {
+        console.log('TODO details ERROR');
+        res.status(500).json({ errorMessage: 'Todo details went wrong' });
+        return;
+        }
+        res.status(200).json(todoFromDb);
+        });
+      }
+    );
 });
 
 router.delete('/todos/:todoId', (req, res,next) => {
@@ -82,7 +125,7 @@ TodoModel.findById(
       res.status(500).json({ errorMessage: 'Todo delete went wrong ' });
       return;
         }
-          res.status(200).json(phoneFromDb);
+          res.status(200).json(todoFromDb);
         }
       );
     }
