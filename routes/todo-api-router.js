@@ -18,6 +18,8 @@ router.get('/todos', (req, res, next) => {
   });
 });
 
+
+
 //POST localhost:3000/api/phones
 router.post('/todos', (req, res,next) => {
 
@@ -53,26 +55,27 @@ const theTodo = new TodoModel({
     });
 });
 
-// router.get('/todos/:todoId', (req, res, next) => {
-//   TodoModel.findById(
-//     req.params.todoId,
-//     (err, todoFromDb) => {
-//       if (err) {
-//         console.log('Todo details ERROR');
-//         res.status(500).json({errorMessage: 'Todo details went wrong'});
-//         return;
-//       }
-//       res.status(200).json(todoFromDb);
-//     }
-//   );
-// });
+router.get('/todos/:todoId', (req, res, next) => {
+  TodoModel.findById(
+    req.params.todoId,
+    (err, todoFromDb) => {
+      if (err) {
+        console.log('Todo details ERROR');
+        res.status(500).json({errorMessage: 'Todo details went wrong'});
+        return;
+      }
+      res.status(200).json(todoFromDb);
+    }
+  );
+});
+
 
 router.put('/todos/:todoId', (req, res, next) => {
 
   if (!req.user) {
   res.status(401).json({ errorMessage: 'Not loged in.' });
   return;
-}
+  }
 
   TodoModel.findById(
     req.params.todoId,
@@ -109,6 +112,7 @@ router.put('/todos/:todoId', (req, res, next) => {
       }
     );
 });
+
 
 router.delete('/todos/:todoId', (req, res,next) => {
   if (!req.user) {
